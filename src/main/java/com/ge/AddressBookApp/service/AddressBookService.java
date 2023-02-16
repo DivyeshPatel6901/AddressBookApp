@@ -1,6 +1,7 @@
 package com.ge.AddressBookApp.service;
 
 import com.ge.AddressBookApp.DTO.AddressBookDTO;
+import com.ge.AddressBookApp.JWTToken.JwtToken;
 import com.ge.AddressBookApp.exception.AddressBookCustomException;
 import com.ge.AddressBookApp.model.AddressBook;
 import com.ge.AddressBookApp.repo.AddressBookRepo;
@@ -13,19 +14,23 @@ import java.util.Optional;
 @Service
 public class AddressBookService {
     @Autowired
+    private JwtToken jwtToken;
+    @Autowired
     private AddressBookRepo addressBookRepo;
 
 
-    public AddressBook addAddress(AddressBookDTO addressBookDTO) {
+    public String addAddress(AddressBookDTO addressBookDTO) {
         AddressBook addressBook = new AddressBook(addressBookDTO);
-        return addressBookRepo.save(addressBook);
+        addressBookRepo.save(addressBook);
+        return jwtToken.createToken(addressBook.getId());
     }
 
     public List<AddressBook> getAll() {
         return addressBookRepo.findAll();
     }
 
-    public AddressBook getById(int id) {
+    public AddressBook getById(String token) {
+        int id = jwtToken.decodeToken(token);
         Optional<AddressBook> addressBook = addressBookRepo.findById(id);
         if( addressBook.isPresent() ){
             return addressBook.get();
@@ -34,8 +39,8 @@ public class AddressBookService {
                                             " does not exist");
     }
 
-    public AddressBook updateAddress(int id, AddressBookDTO addressBookDTO) {
-        AddressBook addressBook = getById(id);
+    public AddressBook updateAddress(String token, AddressBookDTO addressBookDTO) {
+        AddressBook addressBook = getById(token);
         if( addressBook != null ){
             addressBook.setAddressBook(addressBookDTO);
             return addressBookRepo.save(addressBook);
@@ -43,12 +48,12 @@ public class AddressBookService {
         return null;
     }
 
-    public String deleteAddress(int id) {
-        AddressBook addressBook = getById(id);
+    public String deleteAddress(String token) {
+        AddressBook addressBook = getById(token);
         if(addressBook != null){
-            addressBookRepo.deleteById(id);
-            return "Id : " + id + " deleted successfully";
+            addressBookRepo.deleteById(addressBook.getId());
+            return "Id : " + addressBook.getId() + " deleted successfully";
         }
-        return "Id : " + id + " does not exist";
+        return "Id : " + addressBook.getId() + " does not exist";
     }
 }

@@ -1,10 +1,13 @@
 package com.ge.AddressBookApp.controller;
 
 import com.ge.AddressBookApp.DTO.AddressBookDTO;
+import com.ge.AddressBookApp.DTO.ResponseDTO;
 import com.ge.AddressBookApp.model.AddressBook;
 import com.ge.AddressBookApp.service.AddressBookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +32,10 @@ public class AddressBookController {
     }
      */
     @PostMapping("/addaddress")
-    public AddressBook addAddress(@Valid @RequestBody AddressBookDTO addressBookDTO){
-        return addressBookService.addAddress(addressBookDTO);
+    public ResponseEntity<ResponseDTO> addAddress(@Valid @RequestBody AddressBookDTO addressBookDTO){
+        String token = addressBookService.addAddress(addressBookDTO);
+        ResponseDTO responseDTO = new ResponseDTO("ADDED SUCCESSFULLY", token);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     // http://localhost:8081/addressbook/getall
@@ -40,21 +45,21 @@ public class AddressBookController {
     }
 
     // http://localhost:8081/addressbook/getbyid/2
-    @GetMapping("/getbyid/{id}")
-    public AddressBook getById(@PathVariable int id){
-        return addressBookService.getById(id);
+    @GetMapping("/getbyid")
+    public AddressBook getById(@RequestHeader String token){
+        return addressBookService.getById(token);
     }
 
     //  http://localhost:8081/addressbook/update/1
-    @PutMapping("/update/{id}")
-    public AddressBook updateAddress(@PathVariable int id, @Valid @RequestBody AddressBookDTO addressBookDTO){
-        return addressBookService.updateAddress(id, addressBookDTO);
+    @PutMapping("/update")
+    public AddressBook updateAddress(@RequestHeader String token, @Valid @RequestBody AddressBookDTO addressBookDTO){
+        return addressBookService.updateAddress(token, addressBookDTO);
     }
 
     // http://localhost:8081/addressbook/delete/2
-    @DeleteMapping("/delete/{id}")
-    public String deleteAddress(@PathVariable int id){
-        return addressBookService.deleteAddress(id);
+    @DeleteMapping("/delete")
+    public String deleteAddress(@RequestHeader String token){
+        return addressBookService.deleteAddress(token);
     }
 
 }
