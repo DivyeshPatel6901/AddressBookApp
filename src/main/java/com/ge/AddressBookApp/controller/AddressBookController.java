@@ -33,8 +33,8 @@ public class AddressBookController {
      */
     @PostMapping("/addaddress")
     public ResponseEntity<ResponseDTO> addAddress(@Valid @RequestBody AddressBookDTO addressBookDTO){
-        String token = addressBookService.addAddress(addressBookDTO);
-        ResponseDTO responseDTO = new ResponseDTO("ADDED SUCCESSFULLY", token);
+        AddressBook addressBook = addressBookService.addAddress(addressBookDTO);
+        ResponseDTO responseDTO = new ResponseDTO("ADDED SUCCESSFULLY", addressBook);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
@@ -46,20 +46,25 @@ public class AddressBookController {
 
     // http://localhost:8081/addressbook/getbyid/2
     @GetMapping("/getbyid")
-    public AddressBook getById(@RequestHeader String token){
-        return addressBookService.getById(token);
+    public AddressBook getById(@RequestHeader Integer id){
+        return addressBookService.getById(id);
     }
 
     //  http://localhost:8081/addressbook/update/1
     @PutMapping("/update")
-    public AddressBook updateAddress(@RequestHeader String token, @Valid @RequestBody AddressBookDTO addressBookDTO){
-        return addressBookService.updateAddress(token, addressBookDTO);
+    public AddressBook updateAddress(@RequestHeader Integer id, @Valid @RequestBody AddressBookDTO addressBookDTO){
+        return addressBookService.updateAddress(id, addressBookDTO);
     }
 
     // http://localhost:8081/addressbook/delete/2
     @DeleteMapping("/delete")
-    public String deleteAddress(@RequestHeader String token){
-        return addressBookService.deleteAddress(token);
+    public String deleteAddress(@RequestHeader Integer id){
+        return addressBookService.deleteAddress(id);
+    }
+
+    @GetMapping("/sortbycity")
+    public List<AddressBook> sortByCity(){
+        return addressBookService.sortByCity();
     }
 
 }

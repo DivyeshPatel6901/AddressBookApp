@@ -19,18 +19,19 @@ public class AddressBookService {
     private AddressBookRepo addressBookRepo;
 
 
-    public String addAddress(AddressBookDTO addressBookDTO) {
+    public AddressBook addAddress(AddressBookDTO addressBookDTO) {
         AddressBook addressBook = new AddressBook(addressBookDTO);
-        addressBookRepo.save(addressBook);
-        return jwtToken.createToken(addressBook.getId());
+//        addressBookRepo.save(addressBook);
+//        return jwtToken.createToken(addressBook.getId());
+        return addressBookRepo.save(addressBook);
     }
 
     public List<AddressBook> getAll() {
         return addressBookRepo.findAll();
     }
 
-    public AddressBook getById(String token) {
-        int id = jwtToken.decodeToken(token);
+    public AddressBook getById(Integer id) {
+//        int id = jwtToken.decodeToken(token);
         Optional<AddressBook> addressBook = addressBookRepo.findById(id);
         if( addressBook.isPresent() ){
             return addressBook.get();
@@ -39,8 +40,8 @@ public class AddressBookService {
                                             " does not exist");
     }
 
-    public AddressBook updateAddress(String token, AddressBookDTO addressBookDTO) {
-        AddressBook addressBook = getById(token);
+    public AddressBook updateAddress(Integer id, AddressBookDTO addressBookDTO) {
+        AddressBook addressBook = getById(id);
         if( addressBook != null ){
             addressBook.setAddressBook(addressBookDTO);
             return addressBookRepo.save(addressBook);
@@ -48,12 +49,16 @@ public class AddressBookService {
         return null;
     }
 
-    public String deleteAddress(String token) {
-        AddressBook addressBook = getById(token);
+    public String deleteAddress(Integer id) {
+        AddressBook addressBook = getById(id);
         if(addressBook != null){
             addressBookRepo.deleteById(addressBook.getId());
             return "Id : " + addressBook.getId() + " deleted successfully";
         }
         return "Id : " + addressBook.getId() + " does not exist";
+    }
+
+    public List<AddressBook> sortByCity() {
+        return addressBookRepo.sortByCity();
     }
 }
