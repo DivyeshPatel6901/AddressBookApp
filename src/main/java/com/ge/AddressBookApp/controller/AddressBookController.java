@@ -18,6 +18,12 @@ public class AddressBookController {
     @Autowired
     private AddressBookService addressBookService;
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World";
+    }
+/*
+
     // http://localhost:8081/addressbook/hello
     @GetMapping("/hello")
     public String hello(){
@@ -25,12 +31,15 @@ public class AddressBookController {
     }
 
     // http://localhost:8081/addressbook/addaddress
-    /*
+    */
+/*
     {
     "firstName" : "Divyesh", "lastName" : "Patel", "city" : "Mehsana",
     "state" : "Gujarat", "zip" : "384002", "phoneNo" : "990995005", "email" : "divyesh@gmail.com"
     }
      */
+
+
     @PostMapping("/addaddress")
     public ResponseEntity<ResponseDTO> addAddress(@Valid @RequestBody AddressBookDTO addressBookDTO){
         AddressBook addressBook = addressBookService.addAddress(addressBookDTO);
@@ -66,5 +75,6 @@ public class AddressBookController {
     public List<AddressBook> sortByCity(){
         return addressBookService.sortByCity();
     }
+
 
 }

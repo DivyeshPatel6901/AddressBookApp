@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface AddressBookRepo extends JpaRepository<AddressBook,Integer> {
-    @Query(value = "select * from address_book order by city", nativeQuery = true)
+    @Query(value = "select * from address_book order by pincode", nativeQuery = true)
     List<AddressBook> sortByCity();
 }
